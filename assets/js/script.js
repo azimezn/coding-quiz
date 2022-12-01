@@ -12,6 +12,7 @@ startButton.addEventListener('click', startQuiz);
 var secondsLeft = 100;
 var questionCount = 0;
 var score = 0;
+var initials = "";
 
 var questionList = [
 
@@ -40,7 +41,7 @@ var questionList = [
     },
 
     {
-        question: "Which one is NOT a global property JavaScript?",
+        question: "Which one is NOT a built-in functionalityini JavaScript?",
         choices: ["document", "onclick", "divTags", "currentTarget"],
         answer: "divTags"
     },
@@ -58,12 +59,9 @@ function setTime() {
     }, 1000)
 }
 
-
-
 function checkAnswer() {
     questionArea.addEventListener("click", function(event) {
         console.log(event.target);
-        console.log("question count " + questionCount);
         var clickChoice = event.target.textContent;
         if (clickChoice == questionList[questionCount].answer) {
             console.log("answer is correct");
@@ -86,41 +84,34 @@ function presentQuestion() {
         checkAnswer();
     }
     else {
-        console.log("done")
-        score == secondsLeft
-        clearInterval(timerInterval);
-        //stop timer clearInterval
+        console.log("questions are finished")
+        score == secondsLeft;
+        timer == secondsLeft;
+        //clearInterval(timerInterval);
         //final screen
         questionArea.textContent = "";
+        questionArea.innerHTML = "<textarea></textarea>";
+        // enter initials in var initials
+        localStorage.setItem(initials, score);
+        console.log(initials, score);
 
     }
 }
 
 function startQuiz() {
     startScreen.textContent = "";
+    startScreen.innerHTML = "<h1>Coding Quiz</h1>";
+    questionArea.innerHTML = "";
     setTime();
 
     questionArea.appendChild(h2El);
     questionArea.appendChild(ulEl);
    
-
     presentQuestion();
-
-
 }
 
+highScore.addEventListener("click", showHighScore);
 
-
-
-// timer starts and present a question
-
-// answer question then another question comes up
-
-// incorrect answer -15 seconds
-
-// game is over when all questions are answered or timer is 0
-
-// enter initials screen and submit and display score
-
-// high scores screen
-
+function showHighScore() {
+    localStorage.getItem(initials)
+}
