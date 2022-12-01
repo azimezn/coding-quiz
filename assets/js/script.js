@@ -3,16 +3,20 @@ var highScore = document.querySelector("#high-score");
 var timer = document.querySelector("#timer");
 var startScreen = document.querySelector(".start-screen");
 var questionArea = document.querySelector(".question-area")
+var highscoreList = document.querySelector("#highscore-list")
 
 var h2El = document.createElement("h2")
 var ulEl = document.createElement("ul")
 
 startButton.addEventListener('click', startQuiz);
+questionArea.addEventListener("click", checkAnswer);
+highScore.addEventListener("click", showHighScore);
 
 var secondsLeft = 100;
 var questionCount = 0;
 var score = 0;
 var initials = "";
+var timerInterval;
 
 var questionList = [
 
@@ -48,40 +52,49 @@ var questionList = [
 
 ]
 
+function showHighScore() {
+    localStorage.getItem(initials);
+    highscoreList.innerHTML = `<li>${initials + ": " + score}`;
+
+}
+
 function setTime() {
-    var timerInterval = setInterval(function () {
+    timerInterval = setInterval(function () {
         secondsLeft--;
         timer.textContent = "Time: " + secondsLeft;
 
-        if (secondsLeft === 0) {
+        if (secondsLeft <= 0) {
             clearInterval(timerInterval);
         }
     }, 1000)
 }
 
-function checkAnswer() {
-    questionArea.addEventListener("click", function(event) {
+
+
+function checkAnswer(event) {
+    event.preventDefault();
+    if (event.target.matches("li")) {
         console.log(event.target);
-        var clickChoice = event.target.textContent;
-        if (clickChoice == questionList[questionCount].answer) {
+        if (event.target.textContent == questionList[questionCount].answer) {
             console.log("answer is correct");
         } else {
             console.log("answer is wrong");
             secondsLeft = secondsLeft - 15;
         }
-        questionCount++;
-        presentQuestion();
-    });
+    questionCount++;
+    presentQuestion();
+    }
 }
 
 function presentQuestion() {
+    
 
     console.log("question count " + questionCount)
-    if (questionCount < 5) {
+    if (questionCount < questionList.length) {
         h2El.textContent = questionList[questionCount].question;
         ulEl.innerHTML = `<li>${questionList[questionCount].choices[0]}</li><li>${questionList[questionCount].choices[1]}</li><li>${questionList[questionCount].choices[2]}</li><li>${questionList[questionCount].choices[3]}</li>`;
         //"<li>" + questionList[0].choices[0] + "</li><li>" + questionList[0].choices[1] + "</li><li>" + questionList[0].choices[2] + "</li><li>" + questionList[0].choices[3] + "</li>";
-        checkAnswer();
+        // checkAnswer();
     }
     else {
         console.log("questions are finished")
@@ -98,7 +111,9 @@ function presentQuestion() {
     }
 }
 
-function startQuiz() {
+function startQuiz(event) {
+    event.preventDefault();
+    event.stopPropagation();
     startScreen.textContent = "";
     startScreen.innerHTML = "<h1>Coding Quiz</h1>";
     questionArea.innerHTML = "";
@@ -106,12 +121,7 @@ function startQuiz() {
 
     questionArea.appendChild(h2El);
     questionArea.appendChild(ulEl);
-   
+
     presentQuestion();
 }
 
-highScore.addEventListener("click", showHighScore);
-
-function showHighScore() {
-    localStorage.getItem(initials)
-}
